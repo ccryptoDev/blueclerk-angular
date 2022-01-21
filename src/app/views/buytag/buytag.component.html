@@ -1,0 +1,32 @@
+<div class="content-heading">
+  <div style="font-size: 20px;">
+    <!-- <div class="d-inline-block">
+      <app-back-button [backRoute]="'/buytag'"></app-back-button>
+    </div> -->
+
+    <div class="d-inline-block pull-right">
+      <button 
+        class="btn btn-oval btn-default customBtn"
+        [routerLink]="['/tags/buytag']">
+        Buy More
+      </button>
+      <b>{{ curTagCnt }}</b> tags not coded
+    </div>
+  </div>
+  <br />
+</div>
+<br />
+
+<app-list-template
+  [newViewTemp]="true"
+  [tabItems]="['PURCHASES']"
+  [displayActivity]="false"
+  [tableList]="tagList"
+  [listTitle]="listTitle"
+  [createTitle]="'Purchases'"
+  [statusAction]="false"
+  [listTableHeads]="['Tags Bought', 'Invoice#', 'Amount']"
+  [listTableIcons]="false"
+  [listTableType]="'buyTags'"
+  (rowClicked)="goToInvoice($event)"
+></app-list-template>

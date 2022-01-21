@@ -1,0 +1,44 @@
+<app-list-template
+  [newViewTemp]="true"
+  [tabItems]="['GROUP LIST', 'RECENT ACTIVITIES']"
+  [tableList]="groupList"
+  [listTitle]="listTitle"
+  [statusAction]="false"
+  [listTableHeads]="listTableHeads"
+  [activityTableHeads]="activityTableHeads"
+  [activityTableData]="activityData"
+  [listTableType]="'groups'"
+  [createTitle]="'New Group'"
+  (searchResult)="updateSearch($event)"
+  (updateInventory)="updateInventory($event)"
+  (updateMember)="onMembers($event.item, $event.idx)"
+  (createNew)="onCreateGroup()"
+></app-list-template>
+
+<modal
+  #groupDlg
+  data-toggle="modal"
+  data-backdrop="static"
+  data-keyboard="false"
+>
+  <modal-header class="modelHeader">
+    <h3>Add Group</h3>
+  </modal-header>
+  <modal-body>
+    <div class="control-caption">
+      Title
+      <div>
+        <input
+          class="form-control"
+          type="text"
+          placeholder="Title"
+          [(ngModel)]="title"
+        />
+      </div>
+    </div>
+  </modal-body>
+  <modal-footer>
+    <button class="btn btn-success" (click)="onConfirmAdd()">OK</button>
+    <button class="btn btn-danger" (click)="onCancelAdd()">Cancel</button>
+  </modal-footer>
+</modal>

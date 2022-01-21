@@ -1,0 +1,11 @@
+<!-- <app-back-button [backRoute]="'/admin'"></app-back-button> -->
+<div *ngIf="!showOutlet" class="row" style="margin: 0px;">
+    <div class="admin-element-container" *ngFor="let historys of history">
+        <app-admin-card [item]="historys" (onClick)="navigate($event)"></app-admin-card>
+    </div>
+</div>
+
+<router-outlet
+    (activate)="onActivate($event)"
+    (deactivate)="onDeactivate($event)">
+</router-outlet>

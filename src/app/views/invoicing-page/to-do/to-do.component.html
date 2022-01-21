@@ -1,0 +1,14 @@
+<app-list-template 
+    [tableList]="completedJobs" 
+    [listTitle]="listTitle"
+    [statusAction]="false"
+    [listTableHeads]="listTableHeads"
+    [listTableIcons]="false"
+    [listTableType]="'completeJobs'"
+    [displayActivity]="false"
+    [displaySideText]="false"
+    [singleTable]="true"
+    (searchResult)="updateSearch($event)"
+    (editJob)="editTheJob($event)"
+    >
+</app-list-template>

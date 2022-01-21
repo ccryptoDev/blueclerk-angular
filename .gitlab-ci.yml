@@ -1,0 +1,30 @@
+stages:
+  - build
+  - deploy
+
+build_production:
+  image: node:10.15-alpine
+  stage: build
+  script:
+    - npm install
+    - ng build --prod --aot=false --build-optimizer=false
+  artifacts:
+    paths:
+      - dist/
+  only:
+    - master
+    
+deploy_production:
+  image: python:latest
+  stage: deploy
+  script:
+    - pip install awscli
+    - echo "Deploy to Production server"
+    - aws s3 sync dist s3://blueclerkcloudfront/ --acl=public-read --delete
+    - echo "Invalidate static contents"
+    - aws cloudfront create-invalidation --distribution-id E18B11G7D9D3CU --paths /*
+  environment:
+    name: production
+    url: https://app.blueclerk.com
+  only:
+    - master

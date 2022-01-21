@@ -1,0 +1,17 @@
+<!-- <app-page-navbar [navItems]="navItem" (itemedClicked)="openPopUp($event)"></app-page-navbar> -->
+<app-list-template 
+    [tableList]="invoices" 
+    [listTitle]="secondListTitle"
+    [statusAction]="false"
+    [listTableHeads]="secondListTableHeads"
+    [listTableIcons]="false"
+    [listTableType]="'invoices'"
+    [displayActivity]="false"
+    [displaySideText]="false"
+    [singleTable]="true"
+    [createTitle]="'Custom Invoice'"
+    (searchResult)="updateSearch($event)"
+    (editJob)="editTheJob($event)"
+    (createNew)="newCustomInvoice()"
+    >
+</app-list-template>

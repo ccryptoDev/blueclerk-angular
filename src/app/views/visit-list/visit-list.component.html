@@ -1,0 +1,360 @@
+<app-back-button
+  *ngIf="!paramsExist && showBackButton"
+  [backRoute]="'/customer'"
+></app-back-button>
+
+<div class="customer-viewer-header">
+  <app-back-button *ngIf="paramsExist" [toLastPage]="true"></app-back-button>
+  <h4 *ngIf="paramsExist">Viewing Customer: {{ paramCustomer }}</h4>
+</div>
+
+<div *ngIf="!paramsExist" class="row content-heading">
+  <div class="col-sm-12 text-right">
+  <span *ngIf="customer_name != undefined" style="font-size: 17px;"
+    ><strong> Viewing : </strong>{{ customer_name }}</span
+  >
+
+  <div class="singleRndBtn">
+    <button
+      class="btn btn-oval btn-default customBtn"
+      style="float: right;"
+      (click)="goToVisitList()"
+      [disabled]="!activeCreateService"
+    >
+      New Ticket
+    </button>
+    <button
+      class="btn btn-oval btn-default customBtn"
+      style="float: right; margin-right: 10px;"
+      (click)="toggle()"
+    >
+      {{ buttonName }}
+    </button>
+  </div>
+
+  <button
+    id="custToast"
+    class="btn btn-success"
+    style="float: right; visibility: hidden;"
+    (click)="beforeToast()"
+  >
+    Toast
+  </button>
+  <br />
+
+  </div>
+</div>
+
+<div *ngIf="show">
+  <app-list-template
+    *ngIf="!paramsExist"
+    [tableList]="serviceTicketsList"
+    [listTitle]="listTitle"
+    [statusAction]="false"
+    [statusCurrent]="true"
+    [listTableHeads]="listTableHeads"
+    [listTableIcons]="false"
+    [listTableType]="'serviceTicket'"
+    [secondListTableType]="'scheduleJobs'"
+    [displayActivity]="false"
+    [displaySideText]="false"
+    [multiListTables]="true"
+    [secondListTitle]="secondListTitle"
+    [secondTableList]="jobList"
+    [serviceStatus]="serviceStatus"
+    [secondListTableHeads]="secondListTableHeads"
+    [statusJobs]="true"
+    [newView]="true"
+    (searchResult)="updateSearch($event)"
+    (createNew)="onCreateBrand()"
+    (createNewJob)="createServiceJob($event)"
+    (showServiceTicketInfo)="showServiceTicketInfo($event)"
+    (secondSearchResult)="updateSecondSearch($event)"
+    (jobDetails)="showJobDetail($event)"
+    (updateTicketStatus)="updateServiceTicketList($event)"
+    (editJob)="editTheJob($event)"
+    (updateJobStatus)="updateJobStatus($event)"
+    (ticketEdit)="editTicket($event)"
+  >
+  </app-list-template>
+
+  <app-list-template
+    *ngIf="paramsExist && routeValue === 'jobs'"
+    [tableList]="jobList"
+    [listTitle]="'Customer Jobs'"
+    [createNewBtn]="false"
+    [createTitle]="'New Employee'"
+    [statusAction]="false"
+    [statusJobs]="true"
+    [listTableHeads]="secondListTableHeads"
+    [listTableIcons]="false"
+    [listTableType]="'scheduleJobs'"
+    [displayActivity]="false"
+    [jobStatus]="jobStatus"
+    (searchResult)="updateSecondSearch($event)"
+    (editJob)="editTheJob($event)"
+    (updateJobStatus)="updateJobStatus($event)"
+  >
+  </app-list-template>
+
+  <app-list-template
+    *ngIf="paramsExist && routeValue === 'tickets'"
+    [tableList]="serviceTicketsList"
+    [listTitle]="ticketListTitle"
+    [createNewBtn]="false"
+    [createTitle]="'New Employee'"
+    [statusAction]="false"
+    [statusCurrent]="true"
+    [listTableHeads]="listTableHeads"
+    [listTableIcons]="false"
+    [listTableType]="'serviceTicket'"
+    [displayActivity]="false"
+    [serviceStatus]="serviceStatus"
+    (searchResult)="updateSearch($event)"
+    (createNewJob)="createServiceJob($event)"
+    (jobDetails)="showJobDetail($event)"
+    (showServiceTicketInfo)="showServiceTicketInfo($event)"
+    (statusUpdate)="updateServiceTicketList($event)"
+    (ticketEdit)="editTicket($event)"
+  ></app-list-template>
+</div>
+
+<toaster-container
+  [toasterconfig]="config"
+  class="toaster-icon"
+></toaster-container>
+
+<div *ngIf="!paramsExist" [hidden]="show" class="animated fadeIn">
+  <div class="card col-sm-12 mt-5">
+    <div class="card-body">
+      <div class="row">
+        <!-- <div class="col-md-4">
+          <button
+            class="btn btn-oval customBtn"
+            (click)="decrement()"
+          >
+            Previous
+          </button>
+          <button
+            class="btn btn-oval customBtn"
+            (click)="today()"
+          >
+            Today
+          </button>
+          <button
+            class="btn btn-oval customBtn"
+            (click)="increment()"
+          >
+            Next
+          </button>
+        </div> -->
+        <div class="col-md-4 offset-md-4 text-center">
+          <h3>
+            <span
+              (click)="decrement()"
+              class="d-inline-block mr-5 cursor-pointer"
+            >
+              <i class="fa fa-angle-left" aria-hidden="true"></i>
+            </span>
+            {{ viewDate | calendarDate: view + "ViewTitle":"en" }}
+            <span
+              (click)="increment()"
+              class="d-inline-block ml-5 cursor-pointer"
+            >
+              <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </span>
+          </h3>
+        </div>
+        <div class="col-md-4 text-right">
+          <button
+            class="btn btn-oval customBtn"
+            (click)="view = 'month'"
+            [class.active]="view === 'month'"
+          >
+            Month
+          </button>
+          <button
+            class="btn btn-oval customBtn"
+            (click)="view = 'week'"
+            [class.active]="view === 'week'"
+          >
+            Week
+          </button>
+          <button
+            class="btn btn-oval customBtn"
+            (click)="view = 'day'"
+            [class.active]="view === 'day'"
+          >
+            Day
+          </button>
+        </div>
+      </div>
+      <br />
+      <div [ngSwitch]="view">
+        <mwl-calendar-month-view
+          *ngSwitchCase="'month'"
+          [viewDate]="viewDate"
+          [events]="events"
+          [activeDayIsOpen]="activeDayIsOpen"
+          (dayClicked)="dayClicked($event.day)"
+          (eventTimesChanged)="eventTimesChanged($event)"
+        >
+        </mwl-calendar-month-view>
+        <mwl-calendar-week-view
+          *ngSwitchCase="'week'"
+          [viewDate]="viewDate"
+          [events]="events"
+          [refresh]="refresh"
+          (eventTimesChanged)="eventTimesChanged($event)"
+        >
+        </mwl-calendar-week-view>
+        <mwl-calendar-day-view
+          #elem
+          *ngSwitchCase="'day'"
+          [viewDate]="viewDate"
+          [events]="events"
+          [refresh]="refresh"
+          (eventTimesChanged)="eventTimesChanged($event)"
+        >
+        </mwl-calendar-day-view>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <modal #custDlg data-toggle="modal" data-backdrop="static" data-keyboard="false">
+    <modal-header class="modelHeader">
+        <div class="modal-header" class="text-center">
+            <h2>Schedule Job</h2>
+            <h2 *ngIf="!flag" style="margin-top: 20px;">Add Scheduled Job</h2>
+            <h2 *ngIf="flag" style="margin-top: 20px;">Update Scheduled Job</h2>
+        </div>
+    </modal-header>
+
+    <modal-body >
+        <div class="row">
+            <div class="col-12" >
+                <div class="control-caption">Select Customer </div>
+                <div >
+                    <input class="form-control" type="text" [(ngModel)]="customerId" [disabled]="flag"  (keyup)="addCustomer($event)" list="dynmicCutsomerIds" id="autocomplete"(change)="selectCustomer(customerId)">
+                    <datalist id="dynmicCutsomerIds">
+                        <option *ngFor="let customerLists of customerdata "  [value]="customerLists.info.name"> </option>
+                    </datalist>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" >
+                <div class="control-caption">Select Employee </div>
+                <div>
+                    <input class="form-control" type="text" [(ngModel)]="technicianId"  (keyup)="addEmployee($event)" list="dynmicUserIds" id="autocomplete" (change)="selectEmployee(technicianId)">
+                    <datalist id="dynmicUserIds">
+                        <option *ngFor="let k of Employeedata" [value]="k.profile.displayName"></option>
+                    </datalist>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" >
+                <div class="control-caption">Select Employee </div>
+                <div>
+                    <input class="form-control" type="text" [(ngModel)]="technicianId"  (keyup)="addEmployee($event)" list="dynmicUserIds" id="autocomplete" (change)="selectEmployee(technicianId)">
+                    <datalist id="dynmicUserIds">
+                        <option *ngFor="let k of AllGroupData" [value]="k.profile.displayName"></option>
+                    </datalist>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" >
+                <div class="control-caption">Select Technician </div>
+                <div>
+                    <input class="form-control" type="text" [(ngModel)]="technicianId"  (keyup)="addTech($event)" list="dynmicUserIds" id="autocomplete" (change)="select(technicianId)">
+                    <datalist id="dynmicUserIds">
+                        <option *ngFor="let k of technicianData" [value]="k.profile.displayName"></option>
+                    </datalist>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-12" >
+                <div class="control-caption">Select Customer Equipment</div>
+                <div >
+                    <input class="form-control" type="text" list="dynmicCutsomerEquipmentIds" id="autocomplete"  [(ngModel)]="EquipmentId" (change)="selectEquipment(EquipmentId)">
+                        <datalist id="dynmicCutsomerEquipmentIds">
+                            <option *ngFor="let equipmentDatas of equipmentData"  [value]="equipmentDatas.info.location"> {{equipmentDatas.brand?.title}} {{equipmentDatas.type?.title}} </option>
+                        </datalist>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div  class="control-caption">Job Type</div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend"></div>
+                    <select class="form-control" id="industry" [disabled]="flag" [(ngModel)]="jobTypeId" (change)="selectType(jobTypeId)">
+                        <option *ngFor="let type of jobTypeData" [value]="type.title" >{{type.title}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" >
+                <div class="control-caption">Notes/Special Instructions</div>
+                <div>
+                    <textarea type="text" class="form-control"[disabled]="flag" [(ngModel)]="note"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" >
+                <div class="control-caption">Scheduled Date/Time </div>
+                <div>
+                    <input type="datetime-local"class="form-control" [(ngModel)]="dateTime">
+                </div>
+            </div>
+        </div>
+    </modal-body>
+    <modal-footer>
+        <button *ngIf="flag" class="btn btn-danger" (click)="onCancelJob()">Click here to cancel this job</button>
+        <button class="btn btn-success" (click)="onConfirmVisitor()">OK</button>
+        <button class="btn btn-danger" (click)="onCancelVisitor()">Cancel</button>
+    </modal-footer>
+</modal> -->
+
+<modal
+  #cancelDlg
+  data-toggle="modal"
+  data-backdrop="static"
+  data-keyboard="false"
+>
+  <modal-header class="modelHeader">
+    <div class="modal-header" style="border-bottom: none !important;">
+      <h2 style="margin-top: 20px;">Cancel Job</h2>
+    </div>
+  </modal-header>
+  <modal-body>
+    <div class="modalDiv">
+      <p class="agreeTxt">Are you sure you want to cancel this job?</p>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="control-caption">Comment</div>
+        <div>
+          <textarea
+            type="text"
+            class="form-control"
+            [(ngModel)]="cancel_comment"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </modal-body>
+  <modal-footer>
+    <button class="btn btn-success" (click)="cancelJob()">Confirm</button>
+    <button class="btn btn-danger" (click)="dismissView()">Cancel</button>
+  </modal-footer>
+</modal>

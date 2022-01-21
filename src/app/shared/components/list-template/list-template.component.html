@@ -1,0 +1,614 @@
+<div *ngIf="!listingDetails" class="row mt-2 list-template">
+  <div class="row" [ngClass]="{ 'custom-margin': singleTable == true }">
+    <div
+      class="customLists col-md-12 col-sm-12 ml-1 p-0"
+      *ngIf="!multiListTables && !newView && !newViewTemp"
+    >
+      <div class="col-md-7 col-sm-7" *ngIf="!singleTable">
+        <div class="pl-3 col-md-12 col-sm-12 p-0">
+          <div class="tableTitle col-md-12 col-sm-12 pl-0">
+            <h3>
+              {{ listTitle }}
+            </h3>
+          </div>
+          <div class="actionOption col-md-12 col-sm-12">
+            <div class="col-md-6 col-sm-6 pl-0">
+              <div class="search-box-div col-md-12 col-sm-12">
+                <div class="col-md-1 searchIcon pr-0 col-sm-1 col-xs-2">
+                  <i class="fa fa-search fa-2x" aria-hidden="true"></i>
+                </div>
+                <div class="col-md-10 pl-0 col-sm-10 col-xs-10">
+                  <input
+                    type="text"
+                    [(ngModel)]="secondSearchOpt.name"
+                    (input)="
+                      onChangeSecondSearchValue('name', secondSearchOpt.name)
+                    "
+                    class="form-control search-box-field"
+                    placeholder="Search Here..."
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="createNewBtn" class="col-md-6 actionBtn col-sm-6">
+              <div class="singleBtn">
+                <button
+                  class="btn btn-oval btn-default customBtn"
+                  type="button"
+                  (click)="onCreateNew()"
+                >
+                  {{ createTitle }}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card customTableHeaderTop col-sm-12 p-0">
+            <div class="table-container card-body p-0">
+              <!-- list table component -->
+              <app-list-table
+                [tableHeads]="listTableHeads"
+                [tableList]="tableList"
+                [displayIcons]="false"
+                [type]="listTableType"
+                (visitList)="updateVisitList($event)"
+                (equipList)="updateEquipList($event)"
+                (editCustomer)="updateEditCustomer($event)"
+                (updateMember)="updatedMember($event)"
+                (updateInventory)="updatedInventory($event)"
+                (createNewJob)="createJob($event)"
+                (showServiceTicketInfo)="infoServiceTicket($event)"
+                (jobDetails)="jobDetail($event)"
+                (editJob)="editTheJob($event)"
+                (rowClicked)="onRowClicked($event)"
+                (detailedImage)="onDetailImg($event)"
+                (ticketEdit)="editTicket($event)"
+              >
+              </app-list-table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 col-sm-12 p-0" *ngIf="singleTable">
+        <div class="customLists col-md-12 col-sm-12 p-0">
+          <div class="col-md-12 p-0 col-sm-12">
+            <div class="tableTitle col-md-12 col-sm-12">
+              <h3 class="p-10">
+                {{ listTitle }}
+              </h3>
+            </div>
+            <div class="actionOption col-md-12 col-sm-12">
+              <div class="col-md-6 pl-0 col-sm-6">
+                <div class="search-box-div col-md-12 col-sm-12">
+                  <div class="col-md-1 searchIcon pr-0 col-sm-1 col-xs-2">
+                    <i class="fa fa-search fa-2x" aria-hidden="true"></i>
+                  </div>
+                  <div class="col-md-10 pl-0 col-sm-10 col-xs-10">
+                    <input
+                      type="text"
+                      [(ngModel)]="secondSearchOpt.name"
+                      (input)="
+                        onChangeSecondSearchValue('name', secondSearchOpt.name)
+                      "
+                      class="form-control search-box-field"
+                      placeholder="Search Here..."
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="col-md-6 actionBtn col-sm-6"
+                *ngIf="
+                  listTableType != 'completeJobs'
+                "
+              >
+                <div class="singleBtn" *ngIf="listTableType != 'jobRates'">
+                  <button
+                    class="btn btn-oval btn-default customBtn"
+                    type="button"
+                    (click)="onCreateNew()"
+                  >
+                    {{ createTitle }}
+                  </button>
+                </div>
+                <div class="singleBtn" *ngIf="listTableType == 'jobRates'">
+                  <button
+                    class="btn btn-oval btn-default customBtn"
+                    type="button"
+                    (click)="onCreateNew()"
+                    *ngIf="tableList.length <= jobTypes"
+                  >
+                    {{ createTitle }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card customTableHeaderTop col-sm-12 p-0">
+              <div class="table-container card-body p-0">
+                <!-- list table component -->
+                <app-list-table
+                  [tableHeads]="listTableHeads"
+                  [tableList]="tableList"
+                  [displayIcons]="false"
+                  [type]="listTableType"
+                  (visitList)="updateVisitList($event)"
+                  (equipList)="updateEquipList($event)"
+                  (editCustomer)="updateEditCustomer($event)"
+                  (updateMember)="updatedMember($event)"
+                  (updateInventory)="updatedInventory($event)"
+                  (createNewJob)="createJob($event)"
+                  (showServiceTicketInfo)="infoServiceTicket($event)"
+                  (jobDetails)="jobDetail($event)"
+                  (editJob)="editTheJob($event)"
+                  [userType]="userType"
+                  [viewUser]="viewUser"
+                  (createNewInvoice)="createNewPurchase($event)"
+                  (createPurchaseOrder)="createNewConvert($event)"
+                  (createEstimates)="createNewConvert($event)"
+                >
+                </app-list-table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-5 sideText col-sm-5" *ngIf="displaySideText">
+        <div class="card customText">
+          <p>{{ sideText }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="newView" class="customTabs">
+      <div *ngIf="listTableType === 'customer'" class="col-md-12 col-sm-12">
+        <mat-tab-group mat-align-tabs="start">
+          <mat-tab label="CUSTOMER LIST">
+            <div class="customLists col-md-12 p-0 col-sm-12">
+              <div class="col-md-12 p-0 col-sm-12">
+                <div class="actionOption col-md-12 col-sm-12">
+                  <div class="col-md-6 pl-0 col-sm-6">
+                    <div class="search-box-div col-md-12 col-sm-12">
+                      <div class="col-md-1 searchIcon pr-0 col-sm-1 col-xs-2">
+                        <i class="fa fa-search fa-2x" aria-hidden="true"></i>
+                      </div>
+                      <div class="col-md-10 pl-0 col-sm-10 col-xs-10">
+                        <input
+                          type="text"
+                          [(ngModel)]="secondSearchOpt.name"
+                          (input)="
+                            onChangeSecondSearchValue(
+                              'name',
+                              secondSearchOpt.name
+                            )
+                          "
+                          class="form-control search-box-field"
+                          placeholder="Search Here..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 actionBtn col-sm-6">
+                    <div class="singleBtn">
+                      <button
+                        class="btn btn-oval btn-default customBtn"
+                        type="button"
+                        (click)="getUpdatedResult('false', 'true')"
+                      >
+                        Filter
+                      </button>
+                    </div>
+                    <div class="singleBtn">
+                      <button
+                        class="btn btn-oval btn-default customBtn"
+                        [matMenuTriggerFor]="menu"
+                        class="customBtn"
+                      >
+                        Sort By
+                        <i class="fa fa-angle-down"></i>
+                      </button>
+                      <mat-menu #menu="matMenu">
+                        <button
+                          mat-menu-item
+                          (click)="getUpdatedResult('true', 'false')"
+                        >
+                          Active
+                        </button>
+                        <button
+                          mat-menu-item
+                          (click)="getUpdatedResult('false', 'true')"
+                        >
+                          Inactive
+                        </button>
+                      </mat-menu>
+                    </div>
+                  </div>
+                </div>
+                <div class="card customTableHeaderTop col-md-12 p-0 col-sm-12">
+                  <div class="table-container card-body p-0">
+                    <!-- list table component -->
+                    <app-list-table
+                      [tableHeads]="listTableHeads"
+                      [tableList]="tableList"
+                      [displayIcons]="false"
+                      [type]="listTableType"
+                      (visitList)="updateVisitList($event)"
+                      (equipList)="updateEquipList($event)"
+                      (editCustomer)="updateEditCustomer($event)"
+                      (updateMember)="updatedMember($event)"
+                      (updateInventory)="updatedInventory($event)"
+                      (createNewJob)="createJob($event)"
+                      (showServiceTicketInfo)="infoServiceTicket($event)"
+                      (jobDetails)="jobDetail($event)"
+                      (editJob)="editTheJob($event)"
+                      (rowClicked)="onRowClicked($event)"
+                      (detailedImage)="onDetailImg($event)"
+                    >
+                    </app-list-table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="RECENT ACTIVITY">
+            <div class="col-md-12 mt-20 col-sm-12">
+              <div class="card customTableHeaderTop">
+                <app-activity-table
+                  [tableHeads]="activityTableHeads"
+                  [tableList]="activityTableData"
+                ></app-activity-table>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+      <div
+        *ngIf="listTableType === 'serviceTicket'"
+        class="col-md-12 col-sm-12"
+      >
+        <mat-tab-group mat-align-tabs="start">
+          <mat-tab label="JOBS LIST">
+            <div class="customLists col-md-12 p-0 col-sm-12">
+              <div class="col-md-12 p-0 col-sm-12">
+                <div class="actionOption col-md-12 col-sm-12">
+                  <div class="col-md-6 pl-0 col-sm-6">
+                    <div class="search-box-div col-md-12 col-sm-12">
+                      <div class="col-md-1 searchIcon pr-0 col-sm-1 col-xs-2">
+                        <i class="fa fa-search fa-2x" aria-hidden="true"></i>
+                      </div>
+                      <div class="col-md-10 pl-0 col-sm-10 col-xs-10">
+                        <input
+                          type="text"
+                          [(ngModel)]="secondSearchOpt.name"
+                          (input)="
+                            onChangeSecondSearchValue(
+                              'name',
+                              secondSearchOpt.name
+                            )
+                          "
+                          class="form-control search-box-field"
+                          placeholder="Search Here..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 actionBtn col-sm-6">
+                    <div class="singleBtn">
+                      <button
+                        class="btn btn-oval btn-default customBtn"
+                        [ngClass]="{ 'activeCustomBtn': this.jobStatus !== 'cancel' }"
+                        type="button"
+                        (click)="jobStatusUpdate('cancel')"
+                      >
+                        Cancelled
+                      </button>
+                    </div>
+                    <div class="singleBtn">
+                      <button
+                        class="btn btn-oval btn-default customBtn"
+                        [ngClass]="{ 'activeCustomBtn': this.jobStatus !== 'complete' }"
+                        type="button"
+                        (click)="jobStatusUpdate('complete')"
+                      >
+                        Complete
+                      </button>
+                    </div>
+                    <div class="singleBtn">
+                      <button
+                        class="btn btn-oval btn-default customBtn"
+                        [ngClass]="{ 'activeCustomBtn': this.jobStatus !== 'started' }"
+                        type="button"
+                        (click)="jobStatusUpdate('started')"
+                      >
+                        Started
+                      </button>
+                    </div>
+                    <div class="singleBtn">
+                      <button
+                        class="btn btn-oval btn-default customBtn"
+                        [ngClass]="{ 'activeCustomBtn': this.jobStatus !== 'pending' }"
+                        type="button"
+                        (click)="jobStatusUpdate('pending')"
+                      >
+                        Pending
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="card customTableHeaderTop col-md-12 p-0 col-sm-12">
+                  <div class="table-container card-body p-0">
+                    <!-- list table component -->
+                    <app-list-table
+                      [tableHeads]="secondListTableHeads"
+                      [tableList]="secondTableList"
+                      [displayIcons]="listTableIcons"
+                      [type]="secondListTableType"
+                      (visitList)="updateVisitList($event)"
+                      (equipList)="updateEquipList($event)"
+                      (editCustomer)="updateEditCustomer($event)"
+                      (updateMember)="updatedMember($event)"
+                      (updateInventory)="updatedInventory($event)"
+                      (editJob)="editTheJob($event)"
+                    >
+                    </app-list-table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="SERVICE TICKETS">
+            <div class="customLists col-md-12 p-0 col-sm-12">
+              <div class="col-md-12 p-0 col-sm-12">
+                <div class="actionOption col-md-12 col-sm-12">
+                  <div class="col-md-6 pl-0 col-sm-6">
+                    <div class="search-box-div col-md-12 col-sm-12">
+                      <div class="col-md-1 searchIcon pr-0 col-sm-1 col-xs-2">
+                        <i class="fa fa-search fa-2x" aria-hidden="true"></i>
+                      </div>
+                      <div class="col-md-10 pl-0 col-sm-10 col-xs-10">
+                        <input
+                          type="text"
+                          [(ngModel)]="secondSearchOpt.name"
+                          (input)="
+                            onChangeSecondSearchValue(
+                              'name',
+                              secondSearchOpt.name
+                            )
+                          "
+                          class="form-control search-box-field"
+                          placeholder="Search Here..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 actionBtn col-sm-6">
+                    <div class="singleBtn">
+                      <button
+                        class="btn btn-oval btn-default customBtn"
+                        [ngClass]="{ 'activeCustomBtn': this.serviceStatus !== 'deleted' }"
+                        type="button"
+                        (click)="ticketStatusUpdate('deleted')"
+                      >
+                        Cancelled
+                      </button>
+                    </div>
+                    <div class="singleBtn">
+                      <button
+                        class="btn btn-oval btn-default customBtn"
+                        [ngClass]="{ 'activeCustomBtn': this.serviceStatus !== 'past' }"
+                        type="button"
+                        (click)="ticketStatusUpdate('jobCreated')"
+                      >
+                        Job Created
+                      </button>
+                    </div>
+                    <div class="singleBtn">
+                      <button
+                        class="btn btn-oval btn-default customBtn"
+                        [ngClass]="{ 'activeCustomBtn': this.serviceStatus !== 'current' }"
+                        type="button"
+                        (click)="ticketStatusUpdate('current')"
+                      >
+                        Current
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="card customTableHeaderTop col-md-12 p-0 col-sm-12">
+                  <div class="table-container card-body p-0">
+                    <!-- list table component -->
+                    <app-list-table
+                      [tableHeads]="listTableHeads"
+                      [tableList]="tableList"
+                      [displayIcons]="listTableIcons"
+                      [type]="listTableType"
+                      (visitList)="updateVisitList($event)"
+                      (equipList)="updateEquipList($event)"
+                      (editCustomer)="updateEditCustomer($event)"
+                      (updateMember)="updatedMember($event)"
+                      (updateInventory)="updatedInventory($event)"
+                      (createNewJob)="createJob($event)"
+                      (showServiceTicketInfo)="infoServiceTicket($event)"
+                      (jobDetails)="jobDetail($event)"
+                      (editJob)="editTheJob($event)"
+                      (ticketEdit)="editTicket($event)"
+                    >
+                    </app-list-table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+
+    <!-- working area for using tables in a generic manner (This @INPUT newViewTemp will be removed in the future) -->
+    <div *ngIf="newViewTemp" class="customTabs">
+      <div class="col-md-12 col-sm-12">
+        <mat-tab-group mat-align-tabs="start">
+          <mat-tab *ngFor="let item of tabItems; last as last" [label]="item">
+            <span
+              *ngIf="
+                displayActivity && last;
+                then recentActivitiesTemp;
+                else normalTemp
+              "
+            ></span>
+            <ng-template #normalTemp>
+              <div class="customLists col-md-12 p-0 col-sm-12">
+                <div class="col-md-12 p-0 col-sm-12">
+                  <div class="actionOption col-md-12 col-sm-12">
+                    <div class="col-md-6 pl-0 col-sm-6">
+                      <div class="search-box-div col-md-12 col-sm-12">
+                        <div class="col-md-1 searchIcon pr-0 col-sm-1 col-xs-2">
+                          <i class="fa fa-search fa-2x" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-md-10 pl-0 col-sm-10 col-xs-10">
+                          <input
+                            type="text"
+                            [(ngModel)]="searchOpt.name"
+                            (input)="
+                              onChangeSearchValue('name', searchOpt.name)
+                            "
+                            class="form-control search-box-field"
+                            placeholder="Search Here..."
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      *ngIf="statusAction && !statusJobs"
+                      class="col-md-6 col-sm-6 actionBtn"
+                    >
+                      <div class="singleBtn">
+                        <button
+                          class="btn btn-oval btn-default customBtn"
+                          type="button"
+                          (click)="getUpdatedResult('false', 'true')"
+                        >
+                          Filter
+                        </button>
+                      </div>
+                      <div class="singleBtn">
+                        <button
+                          class="btn btn-oval btn-default customBtn"
+                          [matMenuTriggerFor]="menu"
+                          class="customBtn"
+                        >
+                          Sort By
+                          <i class="fa fa-angle-down"></i>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                          <button
+                            mat-menu-item
+                            (click)="getUpdatedResult('true', 'false')"
+                          >
+                            Active
+                          </button>
+                          <button
+                            mat-menu-item
+                            (click)="getUpdatedResult('false', 'true')"
+                          >
+                            Inactive
+                          </button>
+                        </mat-menu>
+                      </div>
+                    </div>
+                    <div class="col-md-6 actionBtn col-sm-6">
+                      <div class="singleBtn">
+                        <button
+                          *ngIf="role == 3 ? true : false"
+                          class="btn btn-oval btn-default customBtn"
+                          type="button"
+                          (click)="onCreateNew()"
+                        >
+                          <i class="fa fa-plus"></i> {{ createTitle }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="card customTableHeaderTop col-md-12 p-0 col-sm-12"
+                  >
+                    <div class="table-container card-body p-0">
+                      <app-list-table
+                        [tableHeads]="listTableHeads"
+                        [tableList]="tableList"
+                        [displayIcons]="false"
+                        [type]="listTableType"
+                        (visitList)="updateVisitList($event)"
+                        (equipList)="updateEquipList($event)"
+                        (editCustomer)="updateEditCustomer($event)"
+                        (updateMember)="updatedMember($event)"
+                        (updateInventory)="updatedInventory($event)"
+                        (createNewJob)="createJob($event)"
+                        (showServiceTicketInfo)="infoServiceTicket($event)"
+                        (jobDetails)="jobDetail($event)"
+                        (editJob)="editTheJob($event)"
+                        (rowClicked)="onRowClicked($event)"
+                        (detailedImage)="onDetailImg($event)"
+                      >
+                      </app-list-table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+            <ng-template #recentActivitiesTemp>
+              <div class="col-md-12 mt-20 col-sm-12">
+                <div class="card customTableHeaderTop">
+                  <app-activity-table
+                    [tableHeads]="activityTableHeads"
+                    [tableList]="activityTableData"
+                  ></app-activity-table>
+                </div>
+              </div>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+    <!-- working area for using tables in a generic manner (This @INPUT newViewTemp will be removed in the future) ends -->
+
+    <div *ngIf="listTableType === 'customer'" class="col-sm-12 mb-5">
+      <div class="pull-right" style="padding-right: 15px;">
+        <div *ngIf="customerSyncDetails">
+          <div
+            *ngIf="customerSyncDetails?.customersSynced"
+            class="alert alert-primary m-0"
+          >
+            <div
+              *ngIf="customerSyncDetails?.customersSynced"
+              class="alert alert-primary m-0"
+            >
+              Customers Synced with
+              <span class="qb-logo"></span>
+              at {{ customerSyncDetails?.customersSyncedAt | date: "medium" }}
+            </div>
+          </div>
+          <a
+            *ngIf="!customerSyncDetails?.customersSynced"
+            class="btn btn-primary btn-default"
+            [routerLink]="['./../', 'integrations']"
+          >
+            <i class="icon-shuffle"></i> Sync Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="listingDetails">
+  <app-listing-details
+    [customerSyncDetails]="customerSyncDetails"
+    [type]="detailListingType"
+    [detailsDto]="detailsDto"
+    [jobsConfig]="jobsConfig"
+    [equipmentConfig]="equipmentConfig"
+    (editCustomer)="updateEditCustomer($event)"
+  >
+  </app-listing-details>
+</div>

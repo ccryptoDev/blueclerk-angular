@@ -1,0 +1,222 @@
+<div class="newInvoice">
+    <div class="invoiceView">
+        <div class="top-head">
+            <div class="heading">
+                <h3>{{title}}</h3>
+            </div>
+            <div class="actionBtns">
+                <button class="btn btn-oval btn-default customBtn cancel" type="button" (click)="goToBack()">
+                    Cancel
+                </button>
+                <!-- <button class="btn btn-oval btn-default customBtn cancel" type="button" [routerLink]="'/invoicing/purchase-order'" *ngIf="editPurchaseOrder">
+                    Cancel
+                </button> -->
+                <button class="btn btn-oval btn-default customBtn" type="button" (click)="generateInvoice()" *ngIf="!editInvoice && !editPurchaseOrder && !createNewPurchase && !customInvoice">
+                    Save
+                </button>
+                <button class="btn btn-oval btn-default customBtn" type="button" (click)="generateInvoice()" *ngIf="customInvoice" [disabled]="invoiceJob.customer == '' || invoiceJob.note == ''">
+                    Save
+                </button>
+                <button class="btn btn-oval btn-default customBtn" type="button" (click)="generateInvoice()" *ngIf="!editInvoice && !editPurchaseOrder && createNewPurchase && !customInvoice" [disabled]="invoiceJob.customer == '' || invoiceJob.note == ''">
+                    Save
+                </button>
+                <button class="btn btn-oval btn-default customBtn" type="button" (click)="generateInvoice()" *ngIf="editInvoice || editPurchaseOrder">
+                    Update
+                </button>
+            </div>
+        </div>
+        <mat-card>
+            <div class="top-customer">
+                <p *ngIf="!editInvoice && !createNewPurchase && !customInvoice">
+                    <strong>Customer:</strong> {{invoiceJob.customer.profile.displayName}}
+                </p>
+                <p *ngIf="editInvoice && !createNewPurchase && !customInvoice">
+                    <strong>Customer:</strong> {{invoiceJob.job.customer.profile.displayName}}
+                </p>
+                <div class="selectCustomer" *ngIf="createNewPurchase || customInvoice">
+                     <label>Customer</label>
+                    <!-- <select class="form-control" [(ngModel)]="invoiceJob.customer" name="customer" #customer="ngModel">
+                        <option [value]="customer_id" *ngFor="let customer of customerList">{{customer.profile.displayName}}</option>
+                    </select> -->
+                    <ng-select 
+                        [items]="customerList" 
+                        bindLabel="name"
+                        autofocus
+                        bindValue="id"
+                        [(ngModel)]="invoiceJob.customer"
+                        name="jobType"
+                        >
+                    </ng-select>
+                </div>
+            </div>
+            <div class="invoiceNumber" *ngIf="invoiceView">
+                <p>Invoice #: {{invoiceNumber}}</p>
+            </div>
+            <div class="invoiceDetail">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr *ngIf="invoiceView">
+                            <th>Item</th>
+                            <th class="max-w100 bd-custom">Quantity</th>
+                            <th class="max-w100 bd-custom">Price</th>
+                            <th class="max-w100">Unit</th>
+                            <th class="max-w100 bd-custom">Tax %</th>
+                            <th class="max-w100">Tax Amount</th>
+                            <th class="max-w100">Total</th>
+                        </tr>
+                        <tr *ngIf="!invoiceView">
+                            <th>Item</th>
+                            <th class="max-w100 bd-custom">Quantity</th>
+                            <th class="max-w100 bd-custom">Price</th>
+                            <th class="max-w100 bd-custom">Tax %</th>
+                            <th class="max-w100">Tax Amount</th>
+                            <th class="max-w100">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="invoiceView && !customInvoice">
+                        <tr>
+                            <td class="br-custom" *ngIf="!editInvoice">
+                                {{invoiceJob.type.title}}
+                            </td>
+                            <td class="br-custom" *ngIf="editInvoice">
+                                {{invoiceJob.job.type.title}}
+                            </td>
+                            <td class="b-custom">
+                                <input type="number" [(ngModel)]="invoiceJob.timeSpent" name="hoursSpent" class="form-control custom-input" *ngIf="!invoiceJob.isFixed"
+                                    (ngModelChange)="updateJobRate()" />
+                                <span *ngIf="invoiceJob.isFixed">1</span>
+                            </td>
+                            <td class="b-custom">
+                                <input type="number" [(ngModel)]="invoiceJob.hourlyRate" name="hoursRate" class="form-control custom-input" *ngIf="!invoiceJob.isFixed"
+                                    (ngModelChange)="updateJobRate()" />
+                                <input type="number" [(ngModel)]="invoiceJob.charges" name="hoursRate" class="form-control custom-input" *ngIf="invoiceJob.isFixed"
+                                    (ngModelChange)="updateJobRate()" />
+                            </td>
+                            <td class="br-custom">
+                                <span *ngIf="invoiceJob.isFixed">Fixed</span>
+                                <span *ngIf="!invoiceJob.isFixed">Hours</span>
+                            </td>
+                            <td class="b-custom">
+                                <!-- <input type="number" [(ngModel)]="invoiceJob.taxPercentage" name="tax" class="form-control custom-input" (ngModelChange)="updateJobRate()"/> -->
+                                <select class="form-control custom-select" [(ngModel)]="invoiceJob.taxPercentage" name="tax" (ngModelChange)="updateJobRate()">
+                                    <option [value]="tax.tax" *ngFor="let tax of salesTaxes">{{tax.tax}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                {{invoiceJob.tax | currency:'USD'}}
+                            </td>
+                            <td>
+                                {{invoiceJob.jobTotal | currency:'USD'}}
+                            </td>
+                        </tr>
+                        <tr *ngFor="let item of invoiceJob.items; let i = index;">
+                            <td class="br-custom">
+                                <input type="text" [(ngModel)]="item.name" name="itemName" class="form-control custom-input" (ngModelChange)="updatePurchaseItem(item, i)"
+                                />
+                            </td>
+                            <td class="b-custom">
+                                <input type="number" [(ngModel)]="item.quantity" name="hoursSpent" class="form-control custom-input" (ngModelChange)="updatePurchaseItem(item, i)"
+                                />
+                            </td>
+                            <td class="b-custom">
+                                <input type="number" [(ngModel)]="item.cost" name="hoursRate" class="form-control custom-input" (ngModelChange)="updatePurchaseItem(item, i)"
+                                />
+                            </td>
+                            <td>-</td>
+                            <td class="b-custom">
+                                <select class="form-control custom-select" [(ngModel)]="item.taxPercentage" name="tax" (ngModelChange)="updatePurchaseItem(item, i)">
+                                    <option [value]="tax.tax" *ngFor="let tax of salesTaxes">{{tax.tax}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                {{item.tax | currency:'USD'}}
+                            </td>
+                            <td>
+                                {{item.price | currency:'USD'}}
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="invoiceView && customInvoice">
+                        <tr>
+                            <td class="br-custom">
+                                <input type="text" [(ngModel)]="invoiceJob.name" name="itemName" class="form-control custom-input"
+                                />
+                            </td>
+                            <td class="b-custom">
+                                <input type="number" [(ngModel)]="invoiceJob.timeSpent" name="hoursSpent" class="form-control custom-input" *ngIf="!invoiceJob.isFixed"
+                                    (ngModelChange)="updateJobRate()" />
+                                <span *ngIf="invoiceJob.isFixed">1</span>
+                            </td>
+                            <td class="b-custom">
+                                <input type="number" [(ngModel)]="invoiceJob.hourlyRate" name="hoursRate" class="form-control custom-input" *ngIf="!invoiceJob.isFixed"
+                                    (ngModelChange)="updateJobRate()" />
+                                <input type="number" [(ngModel)]="invoiceJob.charges" name="hoursRate" class="form-control custom-input" *ngIf="invoiceJob.isFixed"
+                                    (ngModelChange)="updateJobRate()" />
+                            </td>
+                            <td class="br-custom">
+                                <select class="form-control custom-select" [(ngModel)]="invoiceJob.type" name="tax" (ngModelChange)="updateJobType()">
+                                    <option [value]="option.value" *ngFor="let option of jobFixedOptions">{{option.title}}</option>
+                                </select>
+                            </td>
+                            <td class="b-custom">
+                                <!-- <input type="number" [(ngModel)]="invoiceJob.taxPercentage" name="tax" class="form-control custom-input" (ngModelChange)="updateJobRate()"/> -->
+                                <select class="form-control custom-select" [(ngModel)]="invoiceJob.taxPercentage" name="tax" (ngModelChange)="updateJobRate()">
+                                    <option [value]="tax.tax" *ngFor="let tax of salesTaxes">{{tax.tax}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                {{invoiceJob.tax | currency:'USD'}}
+                            </td>
+                            <td>
+                                {{invoiceJob.total | currency:'USD'}}
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="!invoiceView">
+                        <tr *ngFor="let item of invoiceJob.items; let i = index;">
+                            <td class="br-custom">
+                                <input type="text" [(ngModel)]="item.name" name="itemName" class="form-control custom-input" (ngModelChange)="updatePurchaseItem(item, i)"
+                                />
+                            </td>
+                            <td class="b-custom">
+                                <input type="number" [(ngModel)]="item.quantity" name="hoursSpent" class="form-control custom-input" (ngModelChange)="updatePurchaseItem(item, i)"
+                                />
+                            </td>
+                            <td class="b-custom">
+                                <input type="number" [(ngModel)]="item.cost" name="hoursRate" class="form-control custom-input" (ngModelChange)="updatePurchaseItem(item, i)"
+                                />
+                            </td>
+                            <td class="b-custom">
+                                <select class="form-control custom-select" [(ngModel)]="item.taxPercentage" name="tax" (ngModelChange)="updatePurchaseItem(item, i)">
+                                    <option [value]="tax.tax" *ngFor="let tax of salesTaxes">{{tax.tax}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                {{item.tax | currency:'USD'}}
+                            </td>
+                            <td>
+                                {{item.price | currency:'USD'}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <a (click)="addItem()" class="customLink" *ngIf="!invoiceView">+ Service/Product</a>
+                <a (click)="addItem()" class="customLink" *ngIf="invoiceView && !customInvoice">+ Purchase Order</a>
+                <div class="purchaseOrderNote" *ngIf="!invoiceView || customInvoice">
+                        <label>Note</label>
+                        <textarea type="text" class="form-control" rows="3" [(ngModel)]="invoiceJob.note" name="note"></textarea>
+                </div>
+                <div class="invoiceTotals">
+                    <div class="totals">
+                        <p>Subtotal:
+                            <strong>{{invoiceJob.total | currency:'USD'}} </strong>
+                        </p>
+                        <p class="m0">Total:
+                            <strong>{{invoiceJob.total | currency:'USD'}}</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+</div>

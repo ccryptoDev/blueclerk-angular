@@ -1,0 +1,13 @@
+<app-list-template
+  [newViewTemp]="true"
+  [tabItems]="['NUMBER IN LIST']"
+  [displayActivity]="false"
+  [tableList]="equipData"
+  [listTitle]="listTitle"
+  [createTitle]="'Purchases'"
+  [statusAction]="false"
+  [listTableHeads]="['No', 'Image', 'Brand', 'Type', 'Model', 'Serial']"
+  [listTableIcons]="false"
+  [listTableType]="'companyInventory'"
+  (detailedImage)="onDetailImg($event)"
+></app-list-template>

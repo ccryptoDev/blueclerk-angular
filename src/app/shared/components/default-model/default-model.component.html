@@ -1,0 +1,787 @@
+<div class="defaultModal">
+  <div class="closeModel">
+    <mat-icon (click)="close()">close</mat-icon>
+  </div>
+  <div class="cusModel" [class.cusHeight]="inputData.dataValues.createJob || inputData.dataValues?.status == 'scheduleServiceJob'">
+    <div class="modalHeading">
+      <h4>{{ inputData.dataValues?.title }}</h4>
+    </div>
+    <div class="modalContent" *ngIf="inputData.dataValues?.status == 'scheduleJob'">
+
+      <form #f1="ngForm" (ngSubmit)="addNew()">
+        <div class="row m-0">
+          <div class="p-0" [ngClass]="{'col-4': inputData.dataValues.createJob }">
+            <div class="formGroup">
+              <label>Select Customer
+                <span [ngStyle]="{ color: 'red' }">*</span></label>
+              <ng-select [items]="inputData.dataInputs.selectCustomer" bindLabel="name" bindValue="id"
+                [(ngModel)]="inputData.dataValues.selectedCustomer" name="customer" #customer="ngModel" required
+                [disabled]="inputData.dataValues.hideCustomer" (ngModelChange)="updateCustomer($event)">
+              </ng-select>
+            </div>
+            <!-- <div class="formGroup">
+                                <label>Comment</label>
+                                <textarea type="text" class="form-control" rows="3" [(ngModel)]="inputData.dataValues.comment" name="comment" #comment="ngModel" required></textarea>
+                            </div> -->
+            <div class="formGroup">
+              <label >Note / Special Instructions</label>
+              <textarea type="text" class="form-control" rows="5" [(ngModel)]="inputData.dataValues.note" name="note"
+                #note="ngModel"></textarea>
+            </div>
+            <div class="formGroup" *ngIf="
+                        inputData.dataValues.createJob &&
+                        inputData.dataInputs.selectVendor.length > 0
+                      ">
+              <label>Employee Type</label>
+              <ng-select [(ngModel)]="inputData.dataValues.employeeType" name="employeeType" #employeeType="ngModel">
+                <ng-option [value]="0">Employee</ng-option>
+                <ng-option [value]="1">Vendor</ng-option>
+              </ng-select>
+            </div>
+            <div class="formGroup" *ngIf="inputData.dataValues.createJob">
+              <label>Job Type
+                <span [ngStyle]="{ color: 'red' }">*</span></label>
+              <ng-select [items]="inputData.dataInputs.jobTypes" bindLabel="name" bindValue="id"
+                [(ngModel)]="inputData.dataValues.jobType" name="jobType" #jobType="ngModel"
+                (ngModelChange)="updateCharges(inputData.dataValues.jobType)" required>
+              </ng-select>
+            </div>
+            <div class="formGroup" *ngIf="
+                        inputData.dataValues.createJob &&
+                        inputData.dataValues.employeeType == 0
+                      ">
+              <label>Select Technician
+                <span [ngStyle]="{ color: 'red' }">*</span></label>
+              <ng-select [items]="inputData.dataInputs.selectTechnicians" bindLabel="name" bindValue="id"
+                [(ngModel)]="inputData.dataValues.selectedTechnician" name="techinician" #techinician="ngModel"
+                required>
+              </ng-select>
+            </div>
+            <div class="formGroup" *ngIf="
+                        inputData.dataValues.createJob &&
+                        inputData.dataValues.employeeType == 1
+                      ">
+              <label>Select Technician
+                <span [ngStyle]="{ color: 'red' }">*</span></label>
+              <ng-select [items]="inputData.dataInputs.selectVendor" bindLabel="name" bindValue="id"
+                [(ngModel)]="inputData.dataValues.selectedTechnician" name="techinician" #techinician="ngModel"
+                required>
+              </ng-select>
+            </div>
+            <div class="formGroup" *ngIf="inputData.dataValues.createJob">
+              <label>Select Equipment</label>
+              <ng-select [items]="inputData.dataInputs.customEquipment" bindLabel="name" bindValue="id"
+                [(ngModel)]="inputData.dataValues.customEquipment" name="equipment">
+              </ng-select>
+            </div>
+            <div class="formGroup" *ngIf="inputData.dataValues.createJob">
+              <label id="fixedHourly">Fixed Or Hourly</label>
+              <mat-radio-group aria-labelledby="fixedHourly" class="example-radio-group m-0"
+                [(ngModel)]="inputData.dataValues.isFixed" name="isFixed" #isFixed="ngModel" required>
+                <mat-radio-button class="example-radio-button m-0" style="margin-right:32px !important" [value]="true"> <span style="font-weight:400">Fixed</span></mat-radio-button>
+                <mat-radio-button class="example-radio- m-0" [value]="false"><span style="font-weight:400">Hourly</span></mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div class="formGroup" *ngIf="inputData.dataValues.createJob">
+              <label>Amount</label>
+              <input type="number" [(ngModel)]="inputData.dataValues.charges" name="charges" #charges="ngModel"
+                class="form-control" />
+            </div>
+          </div>
+          <div class="p-0" [ngClass]="{'col-2': inputData.dataValues.createJob }"></div>
+          <div class="formGroup" *ngIf="inputData.dataValues.createJob" class="col-6 p-0">
+            <label class="date-label">Schedule Date & Time
+              <span [ngStyle]="{ color: 'red' }">*</span></label>
+            <div class="time-label">Choose Date:</div>
+            <!-- <owl-date-time-calendar hour12Timer="true" [(ngModel)]="inputData.dataValues.date"></owl-date-time-calendar> -->
+            <owl-date-time-inline [pickerType]="'calendar'" [(ngModel)]="inputData.dataValues.date" [ngModelOptions]="{standalone: true}" ></owl-date-time-inline>
+            <div style="margin-top:24px;width:200px">
+              <label class="time-label">Start Time:</label>
+              <ng-select [(ngModel)]="inputData.dataValues.startTime" name="startTime" #startTime="ngModel">
+                <ng-option value="00:00">12.00 AM</ng-option>
+                <ng-option value="00:30">12.30 AM</ng-option>
+                <ng-option value="01:00">01.00 AM</ng-option>
+                <ng-option value="01:30">01.30 AM</ng-option>
+                <ng-option value="02:00">02.00 AM</ng-option>
+                <ng-option value="02:30">02.30 AM</ng-option>
+                <ng-option value="03:00">03.00 AM</ng-option>
+                <ng-option value="03:30">03.30 AM</ng-option>
+                <ng-option value="04:00">04.00 AM</ng-option>
+                <ng-option value="04:30">04.30 AM</ng-option>
+                <ng-option value="05:00">05.00 AM</ng-option>
+                <ng-option value="05:30">05.30 AM</ng-option>
+                <ng-option value="06:00">06.00 AM</ng-option>
+                <ng-option value="06:30">06.30 AM</ng-option>
+                <ng-option value="07:00">07.00 AM</ng-option>
+                <ng-option value="07:30">07.30 AM</ng-option>
+                <ng-option value="08:00">08.00 AM</ng-option>
+                <ng-option value="08:30">08.30 AM</ng-option>
+                <ng-option value="09:00">09.00 AM</ng-option>
+                <ng-option value="09:30">09.30 AM</ng-option>
+                <ng-option value="10:00">10.00 AM</ng-option>
+                <ng-option value="10:30">10.30 AM</ng-option>
+                <ng-option value="11:00">11.00 AM</ng-option>
+                <ng-option value="11:30">11.30 AM</ng-option>
+                <ng-option value="12:00">12.00 PM</ng-option>
+                <ng-option value="12:30">12.30 PM</ng-option>
+                <ng-option value="13:00">01.00 PM</ng-option>
+                <ng-option value="13:30">01.30 PM</ng-option>
+                <ng-option value="14:00">02.00 PM</ng-option>
+                <ng-option value="14:30">02.30 PM</ng-option>
+                <ng-option value="15:00">03.00 PM</ng-option>
+                <ng-option value="15:30">03.30 PM</ng-option>
+                <ng-option value="16:00">04.00 PM</ng-option>
+                <ng-option value="16:30">04.30 PM</ng-option>
+                <ng-option value="17:00">05.00 PM</ng-option>
+                <ng-option value="17:30">05.30 PM</ng-option>
+                <ng-option value="18:00">06.00 PM</ng-option>
+                <ng-option value="18:30">06.30 PM</ng-option>
+                <ng-option value="19:00">07.00 PM</ng-option>
+                <ng-option value="19:30">07.30 PM</ng-option>
+                <ng-option value="20:00">08.00 PM</ng-option>
+                <ng-option value="20:30">08.30 PM</ng-option>
+                <ng-option value="21:00">09.00 PM</ng-option>
+                <ng-option value="21:30">09.30 PM</ng-option>
+                <ng-option value="22:00">10.00 PM</ng-option>
+                <ng-option value="22:30">10.30 PM</ng-option>
+                <ng-option value="23:00">11.00 PM</ng-option>
+                <ng-option value="23:30">11.30 PM</ng-option>
+              </ng-select>
+            </div>
+            <div style="margin-top:24px;width:200px">
+              <label class="time-label">Duration:</label>
+              <ng-select [(ngModel)]="inputData.dataValues.duration" name="duration" #duration="ngModel">
+                <ng-option [value]="1">1 Hour</ng-option>
+                <ng-option [value]="1.5">1 Hour 30 min</ng-option>
+                <ng-option [value]="2">2 Hours</ng-option>
+                <ng-option [value]="2.5">2 Hours 30 min</ng-option>
+                <ng-option [value]="3">3 Hours</ng-option>
+                <ng-option [value]="3.5">3 Hours 30 min</ng-option>
+                <ng-option [value]="4">4 Hours</ng-option>
+                <ng-option [value]="4.5">4 Hours 30 min</ng-option>
+                <ng-option [value]="5">5 Hours</ng-option>
+                <ng-option [value]="5.5">5 Hours 30 min</ng-option>
+                <ng-option [value]="6">6 Hours</ng-option>
+                <ng-option [value]="6.5">6 Hours 30 min</ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+        </div>
+        <div class="actionBtn">
+          <button class="btn custom-danger btn-default custom-btn" type="button" (click)="close()">
+            Cancel
+          </button>
+          <button class="btn custom-success btn-default custom-btn" type="submit" [disabled]="!f1.form.valid">
+            Submit
+          </button>
+
+          <button *ngIf="!inputData.dataValues.createJob" class="btn btn-primary custom-btn" type="button"
+            (click)="inputData.dataValues.createJob = true  && inputData.dataValues.title = 'Job Details'">
+            Generate Job
+          </button>
+        </div>
+      </form>
+
+    </div>
+    <div class="modalContent" *ngIf="inputData.dataValues?.status == 'scheduleServiceJob'">
+        <form #f1="ngForm" (ngSubmit)="addNew()">
+            <div class="row m-0">
+              <div class="p-0 col-4" >
+                <!-- <div class="formGroup">
+                  <label>Select Customer
+                    <span [ngStyle]="{ color: 'red' }">*</span></label>
+                  <ng-select [items]="inputData.dataInputs.selectCustomer" bindLabel="name" bindValue="id"
+                    [(ngModel)]="inputData.dataValues.selectedCustomer" name="customer" #customer="ngModel" required
+                    [disabled]="inputData.dataValues.hideCustomer" (ngModelChange)="updateCustomer($event)">
+                  </ng-select>
+                </div>
+                <div class="formGroup">
+                  <label >Note / Special Instructions</label>
+                  <textarea type="text" class="form-control" rows="5" [(ngModel)]="inputData.dataValues.description" name="note"
+                    #note="ngModel"></textarea>
+                </div> -->
+                <div class="formGroup">
+                  <label>EmployeeS Type</label>
+                  <ng-select [(ngModel)]="inputData.dataValues.employeeType" name="employeeType" #employeeType="ngModel">
+                    <ng-option [value]="0">Employee</ng-option>
+                    <ng-option [value]="1">Vendor</ng-option>
+                  </ng-select>
+                </div>
+                <div class="formGroup" >
+                  <label>Job Type
+                    <span [ngStyle]="{ color: 'red' }">*</span></label>
+                  <ng-select [items]="inputData.dataInputs.jobTypes" bindLabel="name" bindValue="id"
+                    [(ngModel)]="inputData.dataValues.jobType" name="jobType" #jobType="ngModel"
+                    (ngModelChange)="updateCharges(inputData.dataValues.jobType)" required>
+                  </ng-select>
+                </div>
+                <div class="formGroup" *ngIf="
+                            inputData.dataValues.employeeType == 0
+                          ">
+                  <label>Select Technician
+                    <span [ngStyle]="{ color: 'red' }">*</span></label>
+                  <ng-select [items]="inputData.dataInputs.selectTechnicians" bindLabel="name" bindValue="id"
+                    [(ngModel)]="inputData.dataValues.selectedTechnician" name="techinician" #techinician="ngModel"
+                    required>
+                  </ng-select>
+                </div>
+                <div class="formGroup" *ngIf="
+                            inputData.dataValues.employeeType == 1
+                          ">
+                  <label>Select Technician
+                    <span [ngStyle]="{ color: 'red' }">*</span></label>
+                  <ng-select [items]="inputData.dataInputs.selectVendor" bindLabel="name" bindValue="id"
+                    [(ngModel)]="inputData.dataValues.selectedTechnician" name="techinician" #techinician="ngModel"
+                    required>
+                  </ng-select>
+                </div>
+                <div class="formGroup" >
+                  <label>Select Equipment</label>
+                  <ng-select [items]="inputData.dataInputs.customEquipment" bindLabel="name" bindValue="id"
+                    [(ngModel)]="inputData.dataValues.customEquipment" name="equipment">
+                  </ng-select>
+                </div>
+                <div class="formGroup" >
+                  <label id="fixedHourly">Fixed Or Hourly</label>
+                  <mat-radio-group aria-labelledby="fixedHourly" class="example-radio-group m-0"
+                    [(ngModel)]="inputData.dataValues.isFixed" name="isFixed" #isFixed="ngModel" required>
+                    <mat-radio-button class="example-radio-button m-0" style="margin-right:32px !important" [value]="true"> <span style="font-weight:400">Fixed</span></mat-radio-button>
+                    <mat-radio-button class="example-radio- m-0" [value]="false"><span style="font-weight:400">Hourly</span></mat-radio-button>
+                  </mat-radio-group>
+                </div>
+                <div class="formGroup" >
+                  <label>Amount</label>
+                  <input type="number" [(ngModel)]="inputData.dataValues.charges" name="charges" #charges="ngModel"
+                    class="form-control" />
+                </div>
+                <div class="formGroup">
+                  <label >Description</label>
+                  <textarea type="text" class="form-control" rows="3" [(ngModel)]="inputData.dataValues.description" name="description"
+                    #description="ngModel"></textarea>
+                </div>
+              </div>
+              <div class="p-0 col-2" ></div>
+              <div class="formGroup"  class="col-6 p-0">
+                <label class="date-label">Schedule Date & Time
+                  <span [ngStyle]="{ color: 'red' }">*</span></label>
+                <div class="time-label">Choose Date:</div>
+                <!-- <owl-date-time-calendar hour12Timer="true" [(ngModel)]="inputData.dataValues.date"></owl-date-time-calendar> -->
+                <owl-date-time-inline [pickerType]="'calendar'" [(ngModel)]="inputData.dataValues.date" [ngModelOptions]="{standalone: true}" ></owl-date-time-inline>
+                <div style="margin-top:24px;width:200px">
+                  <label class="time-label">Start Time:</label>
+                  <ng-select [(ngModel)]="inputData.dataValues.startTime" name="startTime" #startTime="ngModel">
+                    <ng-option value="00:00">12.00 AM</ng-option>
+                    <ng-option value="00:30">12.30 AM</ng-option>
+                    <ng-option value="01:00">01.00 AM</ng-option>
+                    <ng-option value="01:30">01.30 AM</ng-option>
+                    <ng-option value="02:00">02.00 AM</ng-option>
+                    <ng-option value="02:30">02.30 AM</ng-option>
+                    <ng-option value="03:00">03.00 AM</ng-option>
+                    <ng-option value="03:30">03.30 AM</ng-option>
+                    <ng-option value="04:00">04.00 AM</ng-option>
+                    <ng-option value="04:30">04.30 AM</ng-option>
+                    <ng-option value="05:00">05.00 AM</ng-option>
+                    <ng-option value="05:30">05.30 AM</ng-option>
+                    <ng-option value="06:00">06.00 AM</ng-option>
+                    <ng-option value="06:30">06.30 AM</ng-option>
+                    <ng-option value="07:00">07.00 AM</ng-option>
+                    <ng-option value="07:30">07.30 AM</ng-option>
+                    <ng-option value="08:00">08.00 AM</ng-option>
+                    <ng-option value="08:30">08.30 AM</ng-option>
+                    <ng-option value="09:00">09.00 AM</ng-option>
+                    <ng-option value="09:30">09.30 AM</ng-option>
+                    <ng-option value="10:00">10.00 AM</ng-option>
+                    <ng-option value="10:30">10.30 AM</ng-option>
+                    <ng-option value="11:00">11.00 AM</ng-option>
+                    <ng-option value="11:30">11.30 AM</ng-option>
+                    <ng-option value="12:00">12.00 PM</ng-option>
+                    <ng-option value="12:30">12.30 PM</ng-option>
+                    <ng-option value="13:00">01.00 PM</ng-option>
+                    <ng-option value="13:30">01.30 PM</ng-option>
+                    <ng-option value="14:00">02.00 PM</ng-option>
+                    <ng-option value="14:30">02.30 PM</ng-option>
+                    <ng-option value="15:00">03.00 PM</ng-option>
+                    <ng-option value="15:30">03.30 PM</ng-option>
+                    <ng-option value="16:00">04.00 PM</ng-option>
+                    <ng-option value="16:30">04.30 PM</ng-option>
+                    <ng-option value="17:00">05.00 PM</ng-option>
+                    <ng-option value="17:30">05.30 PM</ng-option>
+                    <ng-option value="18:00">06.00 PM</ng-option>
+                    <ng-option value="18:30">06.30 PM</ng-option>
+                    <ng-option value="19:00">07.00 PM</ng-option>
+                    <ng-option value="19:30">07.30 PM</ng-option>
+                    <ng-option value="20:00">08.00 PM</ng-option>
+                    <ng-option value="20:30">08.30 PM</ng-option>
+                    <ng-option value="21:00">09.00 PM</ng-option>
+                    <ng-option value="21:30">09.30 PM</ng-option>
+                    <ng-option value="22:00">10.00 PM</ng-option>
+                    <ng-option value="22:30">10.30 PM</ng-option>
+                    <ng-option value="23:00">11.00 PM</ng-option>
+                    <ng-option value="23:30">11.30 PM</ng-option>
+                  </ng-select>
+                </div>
+                <div style="margin-top:24px;width:200px">
+                  <label class="time-label">Duration:</label>
+                  <ng-select [(ngModel)]="inputData.dataValues.duration" name="duration" #duration="ngModel">
+                    <ng-option [value]="1">1 Hour</ng-option>
+                    <ng-option [value]="1.5">1 Hour 30 min</ng-option>
+                    <ng-option [value]="2">2 Hours</ng-option>
+                    <ng-option [value]="2.5">2 Hours 30 min</ng-option>
+                    <ng-option [value]="3">3 Hours</ng-option>
+                    <ng-option [value]="3.5">3 Hours 30 min</ng-option>
+                    <ng-option [value]="4">4 Hours</ng-option>
+                    <ng-option [value]="4.5">4 Hours 30 min</ng-option>
+                    <ng-option [value]="5">5 Hours</ng-option>
+                    <ng-option [value]="5.5">5 Hours 30 min</ng-option>
+                    <ng-option [value]="6">6 Hours</ng-option>
+                    <ng-option [value]="6.5">6 Hours 30 min</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+
+            </div>
+            <div class="actionBtn">
+              <button class="btn custom-danger btn-default custom-btn" type="button" (click)="close()">
+                Cancel
+              </button>
+              <button class="btn custom-success btn-default custom-btn" type="submit" [disabled]="!f1.form.valid">
+                Submit
+              </button>
+            </div>
+          </form>
+    </div>
+    <div class="modalContent" *ngIf="
+        inputData.dataValues?.status === 'brand' ||
+        inputData.dataValues?.status === 'equipment'
+      ">
+      <form #f="ngForm" (ngSubmit)="addNew()">
+        <div class="formGroup">
+          <label>{{ inputData.dataInputs.brandLabel }}</label>
+          <input type="text" [(ngModel)]="inputData.dataValues.newBrand" name="brand" #brand="ngModel" required
+            class="form-control" />
+        </div>
+        <div class="actionBtn">
+          <button class="btn custom-success btn-default custom-btn" type="submit" [disabled]="!f.form.valid">
+            Okay
+          </button>
+          <button class="btn custom-danger btn-default custom-btn" type="button" (click)="close()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="modalContent" *ngIf="inputData.dataValues?.status === 'jobType'">
+      <form #f="ngForm" (ngSubmit)="addNew()">
+        <div class="formGroup">
+          <label>{{ inputData.dataInputs.jobLabel }}</label>
+          <input type="text" [(ngModel)]="inputData.dataValues.newJob" name="job" #job="ngModel" required
+            class="form-control" placeholder="title" />
+        </div>
+        <div class="actionBtn">
+          <button class="btn custom-success btn-default custom-btn" type="submit" [disabled]="!f.form.valid">
+            Okay
+          </button>
+          <button class="btn custom-danger btn-default custom-btn" type="button" (click)="close()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="modalContent" *ngIf="inputData.dataValues?.status === 'employee'">
+      <form #f="ngForm" (ngSubmit)="addNew()">
+        <div class="formGroup">
+          <label>{{ inputData.dataInputs.jobLabel }}</label>
+          <input type="text" [(ngModel)]="inputData.dataValues.newJob" name="job" #job="ngModel" required
+            class="form-control" placeholder="title" />
+        </div>
+        <div class="actionBtn">
+          <button class="btn custom-success btn-default custom-btn" type="submit" [disabled]="!f.form.valid">
+            Okay
+          </button>
+          <button class="btn custom-danger btn-default custom-btn" type="button" (click)="close()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="modalContent" *ngIf="inputData.dataValues?.status === 'serviceInfo'">
+      <div class="ticketInfo">
+        <div class="createdBy">
+          <p>
+            Created By:
+            {{ inputData.dataValues?.data?.createdBy?.profile?.displayName }}
+          </p>
+        </div>
+        <div class="createdOn">
+          <p>
+            Creation Date:
+            {{ inputData.dataValues?.data?.createdAt | date: "medium" }}
+          </p>
+        </div>
+        <div *ngIf="inputData.dataValues?.data?.editedBy?.profile?.displayName" class="createdBy">
+          <p>
+            Last Edited By:
+            {{ inputData.dataValues?.data?.editedBy?.profile?.displayName }}
+          </p>
+        </div>
+        <div *ngIf="inputData.dataValues?.data?.editedAt" class="createdOn">
+          <p>
+            Creation Date:
+            {{ inputData.dataValues?.data?.editedAt | date: "medium" }}
+          </p>
+        </div>
+      </div>
+      <div class="actionBtn">
+        <button class="btn custom-danger btn-default custom-btn" type="button" (click)="close()">
+          Close
+        </button>
+      </div>
+    </div>
+    <div class="modalContent" *ngIf="inputData.dataValues?.status === 'jobInfo'">
+      <div class="ticketInfo">
+        <div class="createdBy">
+          <p>
+            Created by:
+            {{ inputData.dataValues?.data.createdBy.profile.displayName }}
+          </p>
+        </div>
+        <div class="createdOn">
+          <p>
+            Creation Date:
+            {{ inputData.dataValues?.data.createdAt | date: "medium" }}
+          </p>
+        </div>
+      </div>
+      <div class="actionBtn">
+        <button class="btn custom-danger btn-default custom-btn" type="button" (click)="close()">
+          Close
+        </button>
+      </div>
+    </div>
+    <div class="modalContent" *ngIf="inputData.dataValues?.status === 'saveChanges'">
+      <div class="ticketInfo">
+        <div class="createdBy">
+          <p>{{ inputData.dataInputs?.label }}</p>
+        </div>
+      </div>
+      <div class="actionBtn">
+        <button class="btn custom-danger btn-default custom-btn dark-blue-bg" type="button" (click)="closed(true)">
+          Confirm
+        </button>
+        <button class="btn custom-success btn-default custom-btn blue-gray-bg" type="button" (click)="closed(false)">
+          Close
+        </button>
+      </div>
+    </div>
+    <div class="modalContent" *ngIf="inputData.dataValues?.status === 'contracts'">
+      <div class="pendingContract">
+        <div class="singleContract" *ngFor="let contract of inputData.dataInputs?.pendingContracts">
+          <div class="userName">
+            <!-- <p><strong>Company Name:</strong> {{contract.company.info.companyName}}</p> -->
+            <p>
+              You have been added as a vendor by
+              <strong>{{ contract.company.info.companyName }}</strong>.
+            </p>
+          </div>
+          <div class="userAction">
+            <button class="btn btn-primary btn-default custom-btn" type="button" (click)="acceptContract(contract)">
+              Accept
+            </button>
+            <button class="btn btn-danger btn-default custom-btn" type="button" (click)="rejectContract(contract)">
+              Reject
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modalContent reportNumber" *ngIf="
+        inputData.dataValues?.status === 'reportNumber' ||
+        inputData.dataValues?.status === 'invoiceNumber'
+      ">
+      <p *ngIf="inputData.dataValues?.status === 'reportNumber'">
+        The report number will be the same for Jobs and reports generated from
+        the same ticket will have the same number
+      </p>
+      <div class="currentTicketNumber" *ngIf="!inputData.dataValues?.editNumber">
+        <p class="largeContent" *ngIf="inputData.dataValues.hyphenNumber">
+          Starting Number: {{ inputData.dataValues?.hyphenNumber }}-{{
+            inputData.dataValues?.initialNumber
+          }}
+        </p>
+        <p class="largeContent" *ngIf="!inputData.dataValues.hyphenNumber">
+          Starting Number: {{ inputData.dataValues?.initialNumber }}
+        </p>
+        <div class="editButton">
+          <button class="btn btn-primary btn-default custom-btn" type="button"
+            (click)="inputData.dataValues.editNumber = true">
+            Edit
+          </button>
+        </div>
+      </div>
+      <div class="editTicketNumber" *ngIf="inputData.dataValues?.editNumber">
+        <p *ngIf="inputData.dataValues?.status === 'reportNumber'">
+          <strong>* Tickets, jobs and report numbers can contain numbers, letters,
+            and one hyphen. Example: Starting number can be 20, or 20-1 the
+            number before the hyphen will remain static and after will go in
+            sequence</strong>
+        </p>
+        <p *ngIf="inputData.dataValues?.status === 'invoiceNumber'">
+          <strong>* Invoice numbers can contain numbers, letters, and one hyphen.
+            Example: Starting number can be 20, or 20-1 the number before the
+            hyphen will remain static and after will go in sequence</strong>
+        </p>
+        <form #f="ngForm" (ngSubmit)="addNew()">
+          <div class="formGroup">
+            <label>{{ inputData.dataInputs.initialNumber }}</label>
+            <input type="text" [(ngModel)]="inputData.dataValues.initialNumber" name="startingNumber"
+              #startingNumber="ngModel" required class="form-control" />
+          </div>
+          <div class="formGroup" matTooltip="Leave blank if prefixes are not required">
+            <label>{{ inputData.dataInputs.hyphen }}</label>
+            <input type="text" [(ngModel)]="inputData.dataValues.hyphenNumber" name="hyphens" #hyphens="ngModel"
+              class="form-control" />
+          </div>
+          <div class="actionBtn">
+            <button class="btn custom-success btn-default custom-btn" type="submit" [disabled]="!f.form.valid">
+              Okay
+            </button>
+            <button class="btn custom-danger btn-default custom-btn" type="button" (click)="close()">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="modalContent editProfile" *ngIf="inputData.dataValues?.status == 'editUser'">
+      <div class="paneldiv">
+        <div class="image_div" *ngIf="inputData.dataValues.data.details.profile.imageUrl != ''">
+          <img #productImg src="{{ inputData.dataValues.data.details.profile.imageUrl }}" />
+        </div>
+        <div class="image_div" *ngIf="inputData.dataValues.data.details.profile.imageUrl == ''">
+          <img #productImg src="assets/img/user_avatar.png" />
+        </div>
+        <label id="#bb" class="btn btn-primary" style="margin: 10px;">
+          Select File
+          <input #fileInput type="file" size="60" (change)="chooseFile($event)"
+            accept="image/x-png,image/gif,image/jpeg" style="display: none;" />
+        </label>
+      </div>
+      <form #f1="ngForm" (ngSubmit)="updateProfile()">
+        <div class="singleRow">
+          <div class="formGroup">
+            <label>First Name</label>
+            <input class="form-control" type="text" placeholder="First Name"
+              [(ngModel)]="inputData.dataValues.data.details.profile.firstName" name="firstnames" #firstnames="ngModel"
+              required />
+          </div>
+          <div class="formGroup">
+            <label>Last Name</label>
+            <input class="form-control" type="text" placeholder="Last Name"
+              [(ngModel)]="inputData.dataValues.data.details.profile.lastName" name="lastnames" #lastnames="ngModel"
+              required />
+          </div>
+        </div>
+        <div class="formGroup">
+          <label>Street</label>
+          <input class="form-control" type="text" placeholder="Street"
+            [(ngModel)]="inputData.dataValues.data.details.address.street" name="street" #street="ngModel" />
+        </div>
+        <div class="singleRow">
+          <div class="formGroup">
+            <label>City</label>
+            <input class="form-control" type="text" placeholder="City"
+              [(ngModel)]="inputData.dataValues.data.details.address.city" name="city" #city="ngModel" />
+          </div>
+          <div class="formGroup">
+            <label>State</label>
+            <input class="form-control" type="text" placeholder="State"
+              [(ngModel)]="inputData.dataValues.data.details.address.state" name="state" #state="ngModel" />
+          </div>
+        </div>
+        <div class="singleRow">
+          <div class="formGroup">
+            <label>Zip Code</label>
+            <input class="form-control" type="text" placeholder="Zip Code"
+              [(ngModel)]="inputData.dataValues.data.details.address.zipCode" name="zipCode" #zipCode="ngModel" />
+          </div>
+          <div class="formGroup">
+            <label>Phone</label>
+            <input class="form-control" type="text" placeholder="Phone"
+              [(ngModel)]="inputData.dataValues.data.details.contact.phone" name="phone" #phone="ngModel" />
+          </div>
+        </div>
+        <div class="actionBtn">
+          <button class="btn custom-success btn-default custom-btn" type="submit" [disabled]="!f1.form.valid">
+            Okay
+          </button>
+          <button class="btn custom-danger btn-default custom-btn" type="button" (click)="close()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="modalContent editProfile" *ngIf="inputData.dataValues?.status == 'editUserPassword'">
+      <form #f1="ngForm" (ngSubmit)="updateProfile()">
+        <div class="formGroup">
+          <label>Current Password</label>
+          <input class="form-control" type="text" placeholder="Current Password"
+            [(ngModel)]="inputData.dataValues.data.prevPassword" name="prevPassword" #prevPassword="ngModel" required />
+        </div>
+        <div class="formGroup">
+          <label>New Password</label>
+          <input class="form-control" type="text" placeholder="New Password"
+            [(ngModel)]="inputData.dataValues.data.newPassword" name="newPassword" #newPassword="ngModel" required />
+        </div>
+        <div class="formGroup">
+          <label>Confirm Password</label>
+          <input class="form-control" type="text" placeholder="Confirm Password"
+            [(ngModel)]="inputData.dataValues.data.confirmPassword" name="confirmPassword" #confirmPassword="ngModel"
+            required />
+        </div>
+        <div class="actionBtn">
+          <button class="btn custom-success btn-default custom-btn" type="submit"
+            [disabled]="!f1.form.valid || validatePassword()">
+            Okay
+          </button>
+          <button class="btn custom-danger btn-default custom-btn" type="button" (click)="close()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="modalContent" *ngIf="inputData.dataValues?.status == 'jobRate'">
+      <form #f1="ngForm" (ngSubmit)="addNew()">
+        <div class="formGroup">
+          <label>Job Type
+            <span [ngStyle]="{ color: 'red' }">* required</span></label>
+          <ng-select [items]="inputData.dataInputs.jobTypes" bindLabel="name" autofocus bindValue="id"
+            [(ngModel)]="inputData.dataValues.jobType" name="jobType" #jobType="ngModel" required
+            [disabled]="inputData.dataValues.updateJob">
+          </ng-select>
+        </div>
+        <div class="formGroup">
+          <!-- <label>Fixed  Hourly</label>
+                    <select class="form-control" [(ngModel)]="inputData.dataValues.isFixed" name="isFixed" #isFixed="ngModel" required>
+                        <option [value]="true">Fixed</option>
+                        <option [value]="false">Hourly</option>
+                    </select> -->
+          <label id="fixedHourly">Fixed Or Hourly</label>
+          <mat-radio-group aria-labelledby="fixedHourly" class="example-radio-group"
+            [(ngModel)]="inputData.dataValues.isFixed" name="isFixed" #isFixed="ngModel" required>
+            <mat-radio-button class="example-radio-button" [value]="true">Fixed</mat-radio-button>
+            <mat-radio-button class="example-radio-button" [value]="false">Hourly</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="formGroup">
+          <label>Amount</label>
+          <input type="number" [(ngModel)]="inputData.dataValues.charges" name="charges" #charges="ngModel"
+            class="form-control" />
+        </div>
+        <div class="createJob">
+          <mat-checkbox class="example-margin" [(ngModel)]="inputData.dataValues.taxable" name="createJob">
+            Taxable
+          </mat-checkbox>
+        </div>
+        <div class="formGroup" *ngIf="inputData.dataValues.taxable">
+          <label>Sale Tax</label>
+          <select class="form-control" [(ngModel)]="inputData.dataValues.tax" name="saleTax" #saleTax="ngModel">
+            <option [value]="tax._id" *ngFor="let tax of inputData.dataInputs.saleTax">{{ tax.tax }}</option>
+            <!-- <option [value]="false">Hourly</option> -->
+          </select>
+        </div>
+        <div class="actionBtn">
+          <button class="btn custom-success btn-default custom-btn" type="submit" [disabled]="!f1.form.valid"
+            *ngIf="!inputData.dataValues.updateJob">
+            Okay
+          </button>
+          <button class="btn custom-success btn-default custom-btn" type="submit" [disabled]="!f1.form.valid"
+            *ngIf="inputData.dataValues.updateJob">
+            Update Job Rate
+          </button>
+          <button class="btn custom-danger btn-default custom-btn" type="button" (click)="close()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="modalContent" *ngIf="inputData.dataValues?.status == 'saleTax'">
+      <form #f1="ngForm" (ngSubmit)="addNew()">
+        <div class="formGroup">
+          <label>Location</label>
+          <input type="text" [(ngModel)]="inputData.dataValues.state" name="state" #state="ngModel" class="form-control"
+            required [disabled]="
+              inputData.dataValues.updateJob &&
+              !inputData.dataValues.editSaleTax
+            " />
+        </div>
+        <div class="formGroup">
+          <label>Tax</label>
+          <input type="number" [(ngModel)]="inputData.dataValues.tax" name="tax" #tax="ngModel" class="form-control"
+            required [disabled]="
+              inputData.dataValues.updateJob &&
+              !inputData.dataValues.editSaleTax
+            " />
+        </div>
+        <div class="createJob">
+          <mat-checkbox class="example-margin" [(ngModel)]="inputData.dataValues.editSaleTax" name="createJob"
+            *ngIf="inputData.dataValues.updateJob">
+            Edit Sales Tax
+          </mat-checkbox>
+        </div>
+        <div class="actionBtn">
+          <button class="btn custom-success btn-default custom-btn" type="submit" [disabled]="!f1.form.valid"
+            *ngIf="!inputData.dataValues.updateJob">
+            Okay
+          </button>
+          <button class="btn custom-success btn-default custom-btn" type="submit"
+            [disabled]="!f1.form.valid || !inputData.dataValues.editSaleTax" *ngIf="inputData.dataValues.updateJob">
+            Update Sale Tax
+          </button>
+          <button class="btn custom-danger btn-default custom-btn" type="button" (click)="close()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="modalContent" *ngIf="inputData.dataValues?.status === 'invoice'">
+      <form #f1="ngForm" (ngSubmit)="addNew()">
+        <div class="formGroup" *ngIf="!inputData.dataValues.updateJob">
+          <label>Sale Tax</label>
+          <select class="form-control" [(ngModel)]="inputData.dataValues.tax" name="saleTax" #saleTax="ngModel">
+            <option [value]="tax._id" *ngFor="let tax of inputData.dataInputs.taxes">{{ tax.tax }}</option>
+          </select>
+        </div>
+        <div class="formGroup" *ngIf="inputData.dataValues.updateJob">
+          <label>Sale Tax</label>
+          <select class="form-control" [(ngModel)]="inputData.dataValues.tax" name="saleTax" #saleTax="ngModel">
+            <option [value]="tax.tax" *ngFor="let tax of inputData.dataInputs.taxes">{{ tax.tax }}</option>
+          </select>
+        </div>
+        <div class="formGroup">
+          <label>Amount</label>
+          <input type="number" [(ngModel)]="inputData.dataValues.charges" name="charges" #charges="ngModel"
+            class="form-control" [disabled]="!inputData.dataValues.editCharges" />
+        </div>
+        <div class="createJob">
+          <mat-checkbox class="example-margin" [(ngModel)]="inputData.dataValues.editCharges" name="createJob">
+            Edit Amount
+          </mat-checkbox>
+        </div>
+        <div class="actionBtn">
+          <button class="btn custom-success btn-default custom-btn" type="submit" [disabled]="!f1.form.valid"
+            *ngIf="!inputData.dataValues.updateJob">
+            Generate Invoice
+          </button>
+          <button class="btn custom-success btn-default custom-btn" type="submit" [disabled]="!f1.form.valid"
+            *ngIf="inputData.dataValues.updateJob">
+            Update Invoice
+          </button>
+          <button class="btn custom-danger btn-default custom-btn" type="button" (click)="close()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

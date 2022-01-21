@@ -1,0 +1,18 @@
+<app-list-template 
+    [tableList]="purchaseOrderList" 
+    [listTitle]="listTitle"
+    [statusAction]="false"
+    [listTableHeads]="listTableHeads"
+    [listTableIcons]="false"
+    [listTableType]="'purchaseOrders'"
+    [createTitle]="'Create Purchase Order'"
+    [displayActivity]="false"
+    [displaySideText]="false"
+    [singleTable]="true"
+    (searchResult)="updateSearch($event)"
+    (editJob)="editTheJob($event)"
+    (createNew)="newPurchaseOrder()"
+    (createNewInvoice)="createInvoice($event)"
+    (createEstimates)="createEstimates($event)"
+    >
+</app-list-template>

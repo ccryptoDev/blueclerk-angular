@@ -1,0 +1,169 @@
+<app-list-template
+  [newViewTemp]="true"
+  [tabItems]="['OFFICE ADMINS LIST', 'RECENT ACTIVITIES']"
+  [tableList]="officeadminList"
+  [listTitle]="listTitle"
+  [statusAction]="false"
+  [listTableHeads]="listTableHeads"
+  [activityTableHeads]="activityTableHeads"
+  [activityTableData]="activityData"
+  [listTableType]="'officeAdmins'"
+  [createTitle]="'New Office Admin'"
+  (searchResult)="updateSearch($event)"
+  (createNew)="onCreateOfficeAdmin()"
+></app-list-template>
+
+<modal #addDlg data-toggle="modal" data-backdrop="static" data-keyboard="false">
+  <modal-header class="modelHeader">
+    <h3>Add Office admin</h3>
+  </modal-header>
+  <modal-body>
+    <form
+      [formGroup]="officeadminForm"
+      class="form-validate mb-lg"
+      role="form"
+      name="officeadminForm"
+      novalidate=""
+    >
+      <div class="control-caption">
+        Email <span style="color: red;">*</span>
+      </div>
+      <div classs="modal_div">
+        <div class="col-sm-12">
+          <input
+            class="form-control"
+            id="exampleInputEmail"
+            [(ngModel)]="email"
+            type="email"
+            name="email"
+            placeholder="Enter email"
+            autocomplete="off"
+            formControlName="email"
+            required=""
+          />
+          <span
+            class="text-danger"
+            *ngIf="
+              officeadminForm.controls['email'].hasError('required') &&
+              (officeadminForm.controls['email'].dirty ||
+                officeadminForm.controls['email'].touched)
+            "
+            >This field is required</span
+          >
+          <span
+            class="text-danger"
+            *ngIf="
+              officeadminForm.controls['email'].hasError('email') &&
+              (officeadminForm.controls['email'].dirty ||
+                officeadminForm.controls['email'].touched)
+            "
+            >This field must be a valid email address</span
+          >
+        </div>
+      </div>
+      <div class="control-caption">Password</div>
+      <div classs="modal_div">
+        <div class="col-sm-12">
+          <input
+            class="form-control"
+            id="exampleInputpassword"
+            [(ngModel)]="password"
+            type="password"
+            name="password"
+            placeholder="Enter password"
+            autocomplete="off"
+            formControlName="password"
+          />
+          <span
+            class="text-danger"
+            *ngIf="
+              officeadminForm.controls['password'].hasError('required') &&
+              (officeadminForm.controls['password'].dirty ||
+                officeadminForm.controls['password'].touched)
+            "
+            >This field is required</span
+          >
+        </div>
+      </div>
+
+      <div class="control-caption">Name <span style="color: red;">*</span></div>
+      <div classs="modal_div">
+        <div class="col-sm-6">
+          <input
+            class="form-control"
+            id="exampleInputFirstName"
+            [(ngModel)]="firstName"
+            type="text"
+            name="firstName"
+            placeholder="First Name"
+            formControlName="firstName"
+            required=""
+          />
+          <span
+            class="text-danger"
+            *ngIf="
+              officeadminForm.controls['firstName'].hasError('required') &&
+              (officeadminForm.controls['firstName'].dirty ||
+                officeadminForm.controls['firstName'].touched)
+            "
+            >This field is required</span
+          >
+        </div>
+        <div class="col-sm-6">
+          <input
+            class="form-control"
+            id="exampleLastName"
+            [(ngModel)]="lastName"
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            formControlName="lastName"
+            required=""
+          />
+          <span
+            class="text-danger"
+            *ngIf="
+              officeadminForm.controls['lastName'].hasError('required') &&
+              (officeadminForm.controls['lastName'].dirty ||
+                officeadminForm.controls['lastName'].touched)
+            "
+            >This field is required</span
+          >
+        </div>
+      </div>
+
+      <div class="control-caption">Phone</div>
+      <div classs="modal_div">
+        <div class="col-sm-12">
+          <input
+            class="form-control"
+            id="exampleInputphone"
+            maxlength="10"
+            minlength="1"
+            [(ngModel)]="phone"
+            type="text"
+            name="phoneNumber"
+            placeholder="Enter phone Number"
+            autocomplete="off"
+            formControlName="phone"
+          />
+          <span
+            class="text-danger"
+            *ngIf="
+              officeadminForm.controls['phone'].hasError('required') &&
+              (officeadminForm.controls['phone'].dirty ||
+                officeadminForm.controls['phone'].touched)
+            "
+            >This field is required</span
+          >
+        </div>
+      </div>
+    </form>
+  </modal-body>
+  <modal-footer>
+    <button class="btn btn-success" (click)="checkValidation()">OK</button>
+    <button class="btn btn-danger" (click)="onCancelOfficeAdmin()">
+      Cancel
+    </button>
+  </modal-footer>
+</modal>

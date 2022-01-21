@@ -1,0 +1,18 @@
+<app-list-template 
+    [tableList]="estimatesList" 
+    [listTitle]="listTitle"
+    [statusAction]="false"
+    [listTableHeads]="listTableHeads"
+    [listTableIcons]="false"
+    [listTableType]="'estimates'"
+    [createTitle]="'Create Estimates'"
+    [displayActivity]="false"
+    [displaySideText]="false"
+    [singleTable]="true"
+    (createNew)="newEstimate()"
+    (searchResult)="updateSearch($event)"
+    (editJob)="editTheJob($event)"
+    (createNewInvoice)="createInvoice($event)"
+    (createPurchaseOrder)="createPurchaseOrder($event)"
+    >
+</app-list-template>

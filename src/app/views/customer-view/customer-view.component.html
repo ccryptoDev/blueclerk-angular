@@ -1,0 +1,15 @@
+<div class="customer-viewer-header">
+  <app-back-button [toLastPage]="true"></app-back-button>
+  <h4>Viewing Customer: {{paramCustomer}}</h4>
+</div>
+<app-list-template class="customer-detail-list"
+  [tableList]="viewList" 
+  [listTitle]="listTitle"
+  [createTitle]="'Customer View'"
+  [statusAction]="false"
+  [listTableHeads]="listTableHeads"
+  [listTableIcons]="false"
+  [listTableType]="'customerview'"
+  [displayActivity]="false"
+  (searchResult)="updateSearch($event)"
+></app-list-template>

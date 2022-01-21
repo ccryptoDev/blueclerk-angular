@@ -1,0 +1,18 @@
+
+<div *ngIf="displayInvoice">
+    <app-draft-invoice 
+        [invoiceJob]="invoiceJob" 
+        [title]="title" 
+        [invoiceNumber]="invoiceNumber"
+        [salesTaxes]="salesTaxes"
+        [invoiceView]="invoiceView"
+        [editInvoice]="editInvoice"
+        [editPurchaseOrder]="editPurchaseOrder"
+        [purchaseOrderType]="purchaseOrderType"
+        [createNewPurchase]="createNewPurchase"
+        [customInvoice]="customInvoice"
+        (generate)="generateNew($event)"
+        (updateRate)="updateJobRate()"
+        (newPurchaseInvoice)="createPurchaseInvoice($event)"
+        ></app-draft-invoice>
+</div>
